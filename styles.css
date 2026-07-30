@@ -222,6 +222,44 @@ body {
 .gc-best { color: var(--good); font-weight: 650; }
 .gc-go { margin-left: auto; color: var(--accent); font-weight: 700; font-size: 13px; }
 
+/* ============ Закрытый класс (демо-версия) ============ */
+.grade-card.locked {
+  background: var(--surface-2);
+  border-style: dashed;
+  box-shadow: none;
+}
+.grade-card.locked .gc-grade,
+.grade-card.locked .gc-topic { opacity: 0.6; }
+.grade-card.locked .gc-desc { opacity: 0.5; }
+.grade-card.locked .gc-best { color: var(--faint); font-weight: 600; }
+.grade-card.locked .gc-go { color: var(--accent); }
+.grade-card.locked:hover { transform: none; border-color: var(--accent); }
+.gc-lock {
+  color: #fff !important;
+  background: var(--navy);
+  padding: 2px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+/* Плашка «это демо» над сеткой классов */
+.demo-note {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  max-width: 640px;
+  margin: 0 auto 22px;
+  padding: 13px 17px;
+  background: var(--accent-soft);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.demo-note p { margin: 0; }
+.demo-note strong { color: var(--accent); font-weight: 700; }
+.demo-note .info-ico { background: var(--navy); }
+
 .foot { text-align: center; margin-top: 40px; color: var(--muted); font-size: 14px; }
 .foot p { margin: 4px 0; }
 .foot-sub { font-size: 12.5px; color: var(--faint); }

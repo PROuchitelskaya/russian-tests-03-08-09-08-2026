@@ -64,28 +64,59 @@
   }
 
   /* ---------- главная ---------- */
+  /* ---------- демо-режим ----------
+     Демо-страница (demo/index.html) объявляет window.DEMO_MODE = { open: 2 }.
+     Тогда открыты только первые N классов, остальные показываются под замком.
+     На полной версии флага нет – доступны все классы. */
+  var DEMO = window.DEMO_MODE || null;
+  var OPEN_COUNT = DEMO ? (DEMO.open || 2) : DATA.grades.length;
+
+  function isLocked(gradeId) {
+    var i = DATA.grades.findIndex
+      ? DATA.grades.findIndex(function (g) { return g.id === gradeId; })
+      : -1;
+    if (i === -1) {
+      for (var k = 0; k < DATA.grades.length; k++) {
+        if (DATA.grades[k].id === gradeId) { i = k; break; }
+      }
+    }
+    return i >= OPEN_COUNT;
+  }
+
   function renderHome() {
     var store = loadStore();
     var grid = $("grade-grid");
     grid.innerHTML = "";
-    DATA.grades.forEach(function (g) {
+    DATA.grades.forEach(function (g, idx) {
+      var locked = idx >= OPEN_COUNT;
       var best = store[g.id];
       var card = document.createElement("button");
       card.type = "button";
-      card.className = "grade-card";
+      card.className = "grade-card" + (locked ? " locked" : "");
       card.style.setProperty("--h", g.hue);
-      card.setAttribute("aria-label", g.grade + ": " + g.topic);
+      card.setAttribute("aria-label", g.grade + ": " + g.topic + (locked ? " (доступно в PRO Учительской)" : ""));
       card.innerHTML =
         '<span class="gc-top"><span class="gc-grade">' + g.grade + "</span>" +
-        '<span class="gc-chip">' + g.questions.length + " вопросов</span></span>" +
+        (locked
+          ? '<span class="gc-chip gc-lock">🔒 в клубе</span>'
+          : '<span class="gc-chip">' + g.questions.length + " вопросов</span>") + "</span>" +
         '<span class="gc-topic">' + g.topic + "</span>" +
         '<p class="gc-desc">' + g.desc + "</p>" +
         '<span class="gc-meta">' +
-        (best
-          ? '<span class="gc-best">Лучший результат: ' + best.best + " / " + best.total + "</span>"
-          : "<span>Тест ещё не пройден</span>") +
-        '<span class="gc-go">Пройти →</span></span>';
-      card.addEventListener("click", function () { startQuiz(g.id); });
+        (locked
+          ? '<span class="gc-best">Открыто участникам клуба</span>'
+          : (best
+            ? '<span class="gc-best">Лучший результат: ' + best.best + " / " + best.total + "</span>"
+            : "<span>Тест ещё не пройден</span>")) +
+        '<span class="gc-go">' + (locked ? "Открыть доступ →" : "Пройти →") + "</span></span>";
+      card.addEventListener("click", function () {
+        if (locked) {
+          toast("Этот класс открыт участникам PRO Учительской");
+          window.open(DATA.meta.telegram || "https://t.me/UchitelskayaAG", "_blank", "noopener");
+          return;
+        }
+        startQuiz(g.id);
+      });
       grid.appendChild(card);
     });
     show("home");
@@ -93,6 +124,8 @@
 
   /* ---------- тест ---------- */
   function startQuiz(gradeId) {
+    // В демо закрытый класс нельзя открыть и вручную через #g7 в адресной строке
+    if (isLocked(gradeId)) { goHome(); return; }
     var grade = null;
     for (var i = 0; i < DATA.grades.length; i++) {
       if (DATA.grades[i].id === gradeId) { grade = DATA.grades[i]; break; }

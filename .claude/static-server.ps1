@@ -11,6 +11,7 @@ while ($listener.IsListening) {
     $ctx = $listener.GetContext()
     $path = [System.Uri]::UnescapeDataString($ctx.Request.Url.AbsolutePath)
     if ($path -eq '/' ) { $path = '/index.html' }
+    elseif ($path.EndsWith('/')) { $path = $path + 'index.html' }   # /demo/ -> /demo/index.html
     $file = Join-Path $root ($path.TrimStart('/'))
     if (Test-Path $file -PathType Leaf) {
       $ext = [System.IO.Path]::GetExtension($file).ToLower()
