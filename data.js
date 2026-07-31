@@ -4,7 +4,7 @@ window.TESTS_DATA =
     "title": "Тесты по русскому языку · 5–11 классы",
     "subtitle": "По темам уроков недели",
     "storeKey": "rustests20260803:v1",
-    "telegram": "https://t.me/UchitelskayaAG",
+    "telegram": "https://t.me/UchitelskayaAG/1704",
     "brand": "PRO Учительская"
   },
   "grades": [

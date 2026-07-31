@@ -112,7 +112,7 @@
       card.addEventListener("click", function () {
         if (locked) {
           toast("Этот класс открыт участникам PRO Учительской");
-          window.open(DATA.meta.telegram || "https://t.me/UchitelskayaAG", "_blank", "noopener");
+          window.open(DATA.meta.telegram || "https://t.me/UchitelskayaAG/1704", "_blank", "noopener");
           return;
         }
         startQuiz(g.id);
